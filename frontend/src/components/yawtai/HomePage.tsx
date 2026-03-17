@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight, Code2, Bug, FolderGit2, Layers, MessageSquare, Sparkles,
   Terminal, Zap, Shield, Globe, Cpu, ChevronRight, Play, Download,
-  GitBranch, Database, FileCode, Rocket
+  GitBranch, Database, FileCode, Rocket, Send
 } from 'lucide-react';
 
 const HERO_IMG = 'https://d64gsuwffb70l.cloudfront.net/69b578ca08d60056f2bc258d_1773500724714_53b75a6a.jpg';
@@ -51,8 +51,19 @@ const stats = [
   { value: '24/7', label: 'AI Availability' },
 ];
 
+const promptSuggestions = [
+  'Build a SaaS dashboard with authentication and billing',
+  'Debug my React component that crashes on mount',
+  'Generate a REST API with Express.js and PostgreSQL',
+  'Analyze my GitHub repo for security vulnerabilities',
+  'Create a mobile-responsive landing page with Tailwind CSS',
+  'Help me optimize my database queries for performance',
+];
+
 const HomePage: React.FC = () => {
+  const navigate = useNavigate();
   const [typedText, setTypedText] = useState('');
+  const [promptInput, setPromptInput] = useState('');
   const fullText = 'Build a fintech dashboard with React, Node.js and PostgreSQL';
 
   useEffect(() => {
@@ -184,6 +195,84 @@ const HomePage: React.FC = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Prompt Space */}
+      <section className="py-20 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-purple-950/10 to-slate-950" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(139,92,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.03)_1px,transparent_1px)] bg-[size:48px_48px]" />
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-medium mb-4">
+              <Send className="w-3.5 h-3.5" />
+              Try It Now
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+              <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                What do you want to
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                build today?
+              </span>
+            </h2>
+            <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+              Describe your project, paste an error, or ask any coding question. YawtAI will handle the rest.
+            </p>
+          </div>
+
+          {/* Prompt Input */}
+          <div className="relative mb-8">
+            <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-cyan-500/20 rounded-2xl blur-lg" />
+            <div className="relative bg-slate-900/90 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden">
+              <textarea
+                value={promptInput}
+                onChange={(e) => setPromptInput(e.target.value)}
+                placeholder="Describe what you want to build, debug, or analyze..."
+                rows={4}
+                className="w-full px-6 py-5 bg-transparent text-white placeholder-slate-500 text-lg focus:outline-none resize-none"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (promptInput.trim()) {
+                      navigate(`/demo?prompt=${encodeURIComponent(promptInput.trim())}`);
+                    }
+                  }
+                }}
+              />
+              <div className="flex items-center justify-between px-6 py-3 border-t border-slate-800/50 bg-slate-800/20">
+                <p className="text-xs text-slate-500">
+                  Press <kbd className="px-1.5 py-0.5 rounded bg-slate-700/50 border border-slate-600/50 text-slate-400 text-[10px] font-mono">Enter</kbd> to submit or <kbd className="px-1.5 py-0.5 rounded bg-slate-700/50 border border-slate-600/50 text-slate-400 text-[10px] font-mono">Shift+Enter</kbd> for new line
+                </p>
+                <button
+                  onClick={() => {
+                    if (promptInput.trim()) {
+                      navigate(`/demo?prompt=${encodeURIComponent(promptInput.trim())}`);
+                    }
+                  }}
+                  disabled={!promptInput.trim()}
+                  className="px-5 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-semibold rounded-lg hover:from-purple-500 hover:to-blue-500 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  <Send className="w-4 h-4" />
+                  Go
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Suggestion Chips */}
+          <div className="flex flex-wrap justify-center gap-2">
+            {promptSuggestions.map((suggestion) => (
+              <button
+                key={suggestion}
+                onClick={() => setPromptInput(suggestion)}
+                className="px-4 py-2 rounded-full bg-slate-800/50 border border-slate-700/50 text-sm text-slate-400 hover:text-white hover:border-purple-500/30 hover:bg-purple-500/5 transition-all"
+              >
+                {suggestion}
+              </button>
+            ))}
           </div>
         </div>
       </section>

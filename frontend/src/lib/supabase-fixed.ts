@@ -4,7 +4,7 @@ export { supabase, getGlobalSupabaseClient } from './supabase-global';
 // Enhanced auth functions with better error handling (NO VERIFICATION REQUIRED)
 export const signUpEnhanced = async (email: string, password: string, name?: string) => {
   try {
-    console.log('📧 Attempting signup for:', email);
+    console.log('Attempting signup for:', email);
     const { supabase } = await import('./supabase-global');
     
     const { data, error } = await supabase.auth.signUp({
@@ -17,30 +17,31 @@ export const signUpEnhanced = async (email: string, password: string, name?: str
     });
     
     if (error) {
-      console.error('❌ Signup failed:', error);
+      console.error('Signup failed:', error);
       return { success: false, error: error.message };
     }
     
-    console.log('✅ Signup successful - NO VERIFICATION REQUIRED');
+    console.log('Signup successful');
+    const isVerified = !!data.user?.email_confirmed_at;
     return { 
       success: true, 
       user: data.user ? {
         id: data.user.id,
         email: data.user.email,
         name: data.user.user_metadata?.name || data.user.email?.split('@')[0],
-        email_verified: true // Always true now
+        email_verified: isVerified
       } : null,
-      needsVerification: false // Always false now
+      needsVerification: !isVerified
     };
-  } catch (error) {
-    console.error('❌ Signup error:', error);
-    return { success: false, error: error.message };
+  } catch (error: unknown) {
+    console.error('Signup error:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Signup failed' };
   }
 };
 
 export const signInEnhanced = async (email: string, password: string) => {
   try {
-    console.log('🔍 Attempting sign in for:', email);
+    console.log('Attempting sign in for:', email);
     const { supabase } = await import('./supabase-global');
     
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -49,29 +50,32 @@ export const signInEnhanced = async (email: string, password: string) => {
     });
     
     if (error) {
-      console.error('❌ Sign in failed:', error);
+      console.error('Sign in failed:', error);
       return { success: false, error: error.message };
     }
     
-    console.log('✅ Sign in successful - NO VERIFICATION CHECK');
+    const isVerified = !!data.user?.email_confirmed_at;
+    if (!isVerified) {
+      return { success: false, error: 'Please verify your email before signing in. Check your inbox for the verification link.' };
+    }
     return { 
       success: true, 
       user: data.user ? {
         id: data.user.id,
         email: data.user.email,
         name: data.user.user_metadata?.name || data.user.email?.split('@')[0],
-        email_verified: true // Always true now
+        email_verified: isVerified
       } : null
     };
-  } catch (error) {
-    console.error('❌ Sign in error:', error);
-    return { success: false, error: error.message };
+  } catch (error: unknown) {
+    console.error('Sign in error:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Sign in failed' };
   }
 };
 
 export const resendVerificationEnhanced = async (email: string) => {
   try {
-    console.log('🔄 Resending verification for:', email);
+    console.log('Resending verification for:', email);
     const { supabase } = await import('./supabase-global');
     
     const { error } = await supabase.auth.resend({
@@ -83,22 +87,22 @@ export const resendVerificationEnhanced = async (email: string) => {
     });
     
     if (error) {
-      console.error('❌ Resend failed:', error);
+      console.error('Resend failed:', error);
       return { success: false, error: error.message };
     }
     
-    console.log('✅ Verification email resent');
+    console.log('Verification email resent');
     return { success: true };
-  } catch (error) {
-    console.error('❌ Resend error:', error);
-    return { success: false, error: error.message };
+  } catch (error: unknown) {
+    console.error('Resend error:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Resend failed' };
   }
 };
 
 // Test function to verify database connection
 export const testDatabaseConnection = async () => {
   try {
-    console.log('🧪 Testing database connection...');
+    console.log('Testing database connection...');
     
     const { supabase } = await import('./supabase-global');
     
@@ -108,16 +112,16 @@ export const testDatabaseConnection = async () => {
       .limit(1);
     
     if (error) {
-      console.error('❌ Database connection failed:', error);
+      console.error('Database connection failed:', error);
       return { success: false, error: error.message };
     }
 
-    console.log('✅ Database connection successful');
+    console.log('Database connection successful');
     console.log('Users in database:', data?.length || 0);
     
     return { success: true, data };
-  } catch (err) {
-    console.error('❌ Database test failed:', err);
-    return { success: false, error: err.message };
+  } catch (err: unknown) {
+    console.error('Database test failed:', err);
+    return { success: false, error: err instanceof Error ? err.message : 'Database test failed' };
   }
 };

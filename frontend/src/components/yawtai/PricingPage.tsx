@@ -43,7 +43,7 @@ const plans = [
     annualPrice: 24,
     popular: true,
     cta: 'Start Pro Trial',
-    ctaLink: '/demo',
+    ctaLink: '/checkout',
     gradient: 'from-purple-500 to-blue-500',
     features: [
       { text: 'Unlimited AI chat messages', included: true },
@@ -67,7 +67,7 @@ const plans = [
     annualPrice: 65,
     popular: false,
     cta: 'Start Team Trial',
-    ctaLink: '/demo',
+    ctaLink: '/checkout',
     gradient: 'from-blue-500 to-cyan-500',
     features: [
       { text: 'Everything in Pro', included: true },

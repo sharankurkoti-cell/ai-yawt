@@ -22,11 +22,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-
-@"
-*.exe
-node_modules/
-dist/
-build/
-"@ | Out-File -Encoding UTF8 .gitignore
