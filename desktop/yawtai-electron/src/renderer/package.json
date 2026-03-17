@@ -1,0 +1,13 @@
+{
+  "name": "renderer",
+  "version": "1.0.0",
+  "description": "YawtAI Desktop Renderer",
+  "main": "index.html",
+  "scripts": {
+    "start": "echo 'Renderer ready'",
+    "build": "echo 'Build complete'"
+  },
+  "keywords": ["electron", "yawtai", "desktop"],
+  "author": "Yawt Technologies",
+  "license": "MIT"
+}

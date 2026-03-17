@@ -1,0 +1,263 @@
+{
+  "name": "yawtai-vscode",
+  "displayName": "YawtAI - Your AI Software Engineer",
+  "description": "AI-powered code completion, debugging, and assistance directly in VS Code",
+  "version": "1.0.0",
+  "publisher": "yawt-technologies",
+  "icon": "resources/icon.png",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Machine Learning",
+    "Snippets",
+    "Programming Languages",
+    "Other"
+  ],
+  "keywords": [
+    "ai",
+    "code completion",
+    "assistant",
+    "copilot",
+    "cursor",
+    "chatgpt",
+    "development",
+    "programming"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "yawtai.openChat",
+        "title": "Open YawtAI Chat",
+        "category": "YawtAI"
+      },
+      {
+        "command": "yawtai.explainCode",
+        "title": "Explain Selected Code",
+        "category": "YawtAI"
+      },
+      {
+        "command": "yawtai.fixCode",
+        "title": "Fix Selected Code",
+        "category": "YawtAI"
+      },
+      {
+        "command": "yawtai.optimizeCode",
+        "title": "Optimize Selected Code",
+        "category": "YawtAI"
+      },
+      {
+        "command": "yawtai.generateTests",
+        "title": "Generate Tests for Selected Code",
+        "category": "YawtAI"
+      },
+      {
+        "command": "yawtai.documentCode",
+        "title": "Generate Documentation",
+        "category": "YawtAI"
+      },
+      {
+        "command": "yawtai.refactorCode",
+        "title": "Refactor Selected Code",
+        "category": "YawtAI"
+      },
+      {
+        "command": "yawtai.explainError",
+        "title": "Explain Error",
+        "category": "YawtAI"
+      },
+      {
+        "command": "yawtai.startAgentMode",
+        "title": "Start Agent Mode",
+        "category": "YawtAI"
+      },
+      {
+        "command": "yawtai.toggleAgentMode": {
+          "title": "Toggle Agent Mode",
+          "category": "YawtAI"
+        },
+        "yawtai.toggleAutoComplete": {
+          "title": "Toggle Auto Completion",
+          "category": "YawtAI"
+        },
+        "yawtai.settings": {
+          "title": "Settings",
+          "category": "YawtAI"
+        }
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "yawtai.openChat",
+        "key": "ctrl+shift+y",
+        "mac": "cmd+shift+y"
+      },
+      {
+        "command": "yawtai.explainCode",
+        "key": "ctrl+shift+e",
+        "mac": "cmd+shift+e"
+      },
+      {
+        "command": "yawtai.fixCode",
+        "key": "ctrl+shift+f",
+        "mac": "cmd+shift+f"
+      },
+      {
+        "command": "yawtai.toggleAutoComplete",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "yawtai.explainCode",
+          "group": "yawtai@1",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "yawtai.fixCode",
+          "group": "yawtai@2",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "yawtai.optimizeCode",
+          "group": "yawtai@3",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "yawtai.generateTests",
+          "group": "yawtai@4",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "yawtai.documentCode",
+          "group": "yawtai@5",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "yawtai.refactorCode",
+          "group": "yawtai@6",
+          "when": "editorHasSelection"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "yawtai.openChat",
+          "group": "navigation"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "yawtaiChatView",
+          "name": "YawtAI Chat",
+          "when": "yawtai.chatVisible"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "yawtai",
+          "title": "YawtAI",
+          "icon": "$(robot)"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "YawtAI",
+      "properties": {
+        "yawtai.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Your YawtAI API key",
+          "scope": "application"
+        },
+        "yawtai.autoComplete": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable automatic code completion",
+          "scope": "application"
+        },
+        "yawtai.autoCompleteDelay": {
+          "type": "number",
+          "default": 500,
+          "description": "Delay in milliseconds before auto-completion triggers",
+          "scope": "application"
+        },
+        "yawtai.maxSuggestions": {
+          "type": "number",
+          "default": 5,
+          "description": "Maximum number of suggestions to show",
+          "scope": "application"
+        },
+        "yawtai.contextLines": {
+          "type": "number",
+          "default": 50,
+          "description": "Number of lines to include as context",
+          "scope": "application"
+        },
+        "yawtai.model": {
+          "type": "string",
+          "default": "gpt-4",
+          "enum": ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo"],
+          "description": "AI model to use for completions",
+          "scope": "application"
+        },
+        "yawtai.enableVoiceInput": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable voice input for chat",
+          "scope": "application"
+        },
+        "yawtai.enableSecurityScan": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable automatic security scanning",
+          "scope": "application"
+        },
+        "yawtai.enableMultiFileContext": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable multi-file context understanding",
+          "scope": "application"
+        }
+      }
+    },
+    "icons": {
+      "yawtai-icon": {
+        "description": "YawtAI icon",
+        "default": {
+          "fontPath": "resources/yawtai.woff",
+          "fontCharacter": "\\E001"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "vscode-languageclient": "^8.1.0"
+  }
+}

@@ -1,0 +1,76 @@
+<idea-plugin package="com.yawtai.jetbrains" url="https://yawtai.com" version="1.0.0">
+    <name>YawtAI - Your AI Software Engineer</name>
+    <description>AI-powered code completion, debugging, and assistance for JetBrains IDEs</description>
+    <vendor email="support@yawtai.com">Yawt Technologies</vendor>
+    <idea-version since-build="213.0"/>
+    
+    <depends>com.intellij.modules.platform</depends>
+    
+    <extensions defaultExtensionNs="com.intellij">
+        <extensionPoints>
+            <extensionPoint name="completion.contributor" interface="com.intellij.codeInsight.completion.CompletionContributor"/>
+        </extensionPoints>
+    </extensions>
+    
+    <!-- AI Code Completion Provider -->
+    <extensions defaultExtensionNs="com.intellij">
+        <completion.contributor language="any" order="first" implementationClass="com.yawtai.jetbrains.completion.YawtAICompletionContributor"/>
+        
+        <!-- AI Chat Tool Window -->
+        <toolWindow id="YawtAI.Chat" secondary="true" icon="/icons/yawtai.svg" anchor="bottom" factoryClass="com.yawtai.jetbrains.chat.YawtAIChatToolWindowFactory"/>
+        
+        <!-- AI Actions in Editor Context Menu -->
+        <action id="YawtAI.ExplainCode" class="com.yawtai.jetbrains.actions.ExplainCodeAction" text="Explain with YawtAI" description="Explain selected code with AI">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            <keyboard-shortcut first-keystroke="ctrl shift y" second-keystroke="meta shift y"/>
+        </action>
+        
+        <action id="YawtAI.FixCode" class="com.yawtai.jetbrains.actions.FixCodeAction" text="Fix with YawtAI" description="Fix selected code with AI">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="YawtAI.ExplainCode"/>
+        </action>
+        
+        <action id="YawtAI.GenerateTests" class="com.yawtai.jetbrains.actions.GenerateTestsAction" text="Generate Tests" description="Generate unit tests for selected code">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="YawtAI.FixCode"/>
+        </action>
+        
+        <action id="YawtAI.OptimizeCode" class="com.yawtai.jetbrains.actions.OptimizeCodeAction" text="Optimize with YawtAI" description="Optimize selected code with AI">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="YawtAI.GenerateTests"/>
+        </action>
+        
+        <action id="YawtAI.RefactorCode" class="com.yawtai.jetbrains.actions.RefactorCodeAction" text="Refactor with YawtAI" description="Refactor selected code with AI">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="YawtAI.OptimizeCode"/>
+        </action>
+        
+        <action id="YawtAI.DocumentCode" class="com.yawtai.jetbrains.actions.DocumentCodeAction" text="Document with YawtAI" description="Generate documentation for selected code">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="YawtAI.RefactorCode"/>
+        </action>
+        
+        <!-- AI Agent Mode -->
+        <action id="YawtAI.StartAgentMode" class="com.yawtai.jetbrains.actions.StartAgentModeAction" text="Start Agent Mode" description="Start autonomous AI agent">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+            <keyboard-shortcut first-keystroke="ctrl alt a" second-keystroke="meta alt a"/>
+        </action>
+        
+        <!-- Security Scanning -->
+        <action id="YawtAI.ScanSecurity" class="com.yawtai.jetbrains.actions.SecurityScanAction" text="Scan Security" description="Scan current file for security vulnerabilities">
+            <add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="YawtAI.StartAgentMode"/>
+        </action>
+        
+        <!-- Voice Input -->
+        <action id="YawtAI.StartVoiceInput" class="com.yawtai.jetbrains.actions.VoiceInputAction" text="Start Voice Input" description="Start voice input for coding">
+            <add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="YawtAI.ScanSecurity"/>
+        </action>
+        
+        <!-- Settings -->
+        <action id="YawtAI.Settings" class="com.yawtai.jetbrains.actions.SettingsAction" text="YawtAI Settings" description="Configure YawtAI settings">
+            <add-to-group group-id="FileMenu" anchor="last"/>
+        </action>
+        
+        <!-- Status Bar Widget -->
+        <statusBarWidget id="YawtAI.Status" implementation="com.yawtai.jetbrains.status.YawtAIStatusBarWidget" anchor="right"/>
+        
+        <!-- Project Settings -->
+        <projectConfigurable instance="com.yawtai.jetbrains.settings.YawtAIProjectSettings" displayName="YawtAI"/>
+        <applicationConfigurable instance="com.yawtai.jetbrains.settings.YawtAIApplicationSettings" displayName="YawtAI" parentId="tools"/>
+    </extensions>
+</idea-plugin>

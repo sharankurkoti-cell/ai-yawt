@@ -1,0 +1,133 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: yawtai-postgres
+    environment:
+      POSTGRES_DB: yawtai
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - yawtai-network
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: yawtai-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - yawtai-network
+    restart: unless-stopped
+
+  # Qdrant Vector Database
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: yawtai-qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - yawtai-network
+    restart: unless-stopped
+
+  # API Server
+  api-server:
+    build:
+      context: ../../backend/api-server
+      dockerfile: ../../infra/docker/Dockerfile.api
+    container_name: yawtai-api-server
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: yawtai
+      DB_USER: postgres
+      DB_PASSWORD: password
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: your-super-secret-jwt-key
+      JWT_REFRESH_SECRET: your-super-secret-refresh-key
+      AI_ENGINE_URL: http://ai-engine:3002
+      DEBUG_AGENT_URL: http://debug-agent:3003
+      PROJECT_GENERATOR_URL: http://project-generator:3004
+      REPO_ANALYSIS_URL: http://repo-analysis:3005
+      # Cloudflare Pages integration
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN}
+      CLOUDFLARE_ACCOUNT_ID: ${CLOUDFLARE_ACCOUNT_ID}
+      CLOUDFLARE_PROJECT_NAME: ${CLOUDFLARE_PROJECT_NAME}
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - yawtai-network
+    restart: unless-stopped
+
+  # AI Engine
+  ai-engine:
+    build:
+      context: ../../backend/ai-engine
+      dockerfile: ../../infra/docker/Dockerfile.ai
+    container_name: yawtai-ai-engine
+    environment:
+      NODE_ENV: production
+      PORT: 3002
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      QDRANT_HOST: qdrant
+      QDRANT_PORT: 6333
+      # Cloudflare Pages integration
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN}
+      CLOUDFLARE_ACCOUNT_ID: ${CLOUDFLARE_ACCOUNT_ID}
+    ports:
+      - "3002:3002"
+    depends_on:
+      - redis
+      - qdrant
+    networks:
+      - yawtai-network
+    restart: unless-stopped
+
+  # Frontend (Vite/React - for Cloudflare Pages deployment)
+  frontend:
+    build:
+      context: ../../
+      dockerfile: ../../infra/docker/Dockerfile.frontend
+    container_name: yawtai-frontend
+    environment:
+      NODE_ENV: production
+      VITE_API_URL: http://localhost:3001
+      VITE_AI_ENGINE_URL: http://localhost:3002
+      # Cloudflare Pages environment variables
+      VITE_CLOUDFLARE_PROJECT_ID: ${CLOUDFLARE_PROJECT_ID}
+      VITE_CLOUDFLARE_ACCOUNT_ID: ${CLOUDFLARE_ACCOUNT_ID}
+    volumes:
+      - ../../dist:/app/dist
+    networks:
+      - yawtai-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  qdrant_data:
+
+networks:
+  yawtai-network:
+    driver: bridge

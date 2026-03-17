@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page - YawtAI</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #020617;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .status {
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .success { background: #065f46; border-color: #10b981; }
+        .loading { background: #1e3a8a; border-color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>YawtAI Deployment Test</h1>
+        <div class="status success">
+            ✅ Static HTML is working correctly
+        </div>
+        <div class="status loading" id="js-test">
+            ⏳ Testing JavaScript...
+        </div>
+        <div class="status loading" id="react-test">
+            ⏳ Testing React App...
+        </div>
+    </div>
+
+    <script>
+        // Test basic JavaScript
+        document.getElementById('js-test').innerHTML = '✅ JavaScript is working';
+        
+        // Test if React app loads
+        setTimeout(() => {
+            const root = document.getElementById('root');
+            if (root && root.children.length > 0) {
+                document.getElementById('react-test').innerHTML = '✅ React App is loading';
+            } else {
+                document.getElementById('react-test').innerHTML = '❌ React App failed to load';
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

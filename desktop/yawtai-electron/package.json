@@ -1,0 +1,80 @@
+{
+  "name": "yawtai-desktop",
+  "version": "1.0.0",
+  "description": "YawtAI Desktop Application",
+  "main": "src/main/index.js",
+  "homepage": "./",
+  "scripts": {
+    "start": "electron .",
+    "dev": "concurrently \"npm run dev:renderer\" \"wait-on http://localhost:3000 && electron .\"",
+    "dev:renderer": "cd src/renderer && npm start",
+    "build": "npm run build:renderer && electron-builder --publish=never --win --x64",
+    "build:renderer": "cd src/renderer && npm run build",
+    "dist": "npm run build",
+    "portable": "electron-builder --publish=never --win portable --x64",
+    "installer": "electron-builder --publish=never --win nsis --x64",
+    "all": "electron-builder --publish=never --win portable --x64 && electron-builder --publish=never --win nsis --x64"
+  },
+  "dependencies": {
+    "electron-store": "^8.1.0",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "electron": "^27.1.0",
+    "electron-updater": "^6.1.4",
+    "concurrently": "^8.2.2",
+    "electron-builder": "^24.6.4",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.yawt.yawtai",
+    "productName": "YawtAI",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/main/**/*",
+      "assets/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        },
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "publisherName": "Yawt Technologies",
+      "signAndEditExecutable": false,
+      "signDlls": false,
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "portable": {
+      "artifactName": "YawtAI-Portable-${version}.${ext}"
+    },
+    "nsis": {
+      "artifactName": "YawtAI-Setup-${version}.${ext}",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "YawtAI"
+    },
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "identity": null,
+      "icon": "assets/yawt-logo.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/yawt-logo.png"
+    }
+  },
+  "keywords": ["electron", "ai", "development", "yawtai"],
+  "author": "Yawt Technologies",
+  "license": "MIT"
+}

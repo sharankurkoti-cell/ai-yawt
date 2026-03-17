@@ -1,0 +1,9 @@
+name = "ai-development-assistant"
+compatibility_date = "2024-03-14"
+pages_build_output_dir = "dist"
+
+[env.production]
+name = "ai-development-assistant-prod"
+
+[env.preview]
+name = "ai-development-assistant-preview"
